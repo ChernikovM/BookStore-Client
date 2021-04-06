@@ -1,0 +1,8 @@
+<div *ngFor="let filter of currentFiltersSet">    
+    <ngb-alert type="primary" (closed)="onRemove(filter.full)">{{ filter.expr }} {{ filter.value }}</ngb-alert>
+</div>
+<p class="lead">Add filter:</p>
+<div>
+    <input class="input" type="text" [(ngModel)]='value'>
+    <button (click)="onSubmit()" class="btn btn-success btn-sm" [disabled]='value.length < 1'>add</button>
+</div>

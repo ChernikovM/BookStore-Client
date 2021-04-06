@@ -1,0 +1,29 @@
+table {
+    border: 1px solid #bbb;
+    display: block;
+
+    overflow-y: hidden;
+    
+    height:auto;
+    width: 75%;
+  }
+  
+  table tbody, thead {
+    flex-direction: column;
+    display: flex;
+  }
+  
+  table tbody {
+    height: 800px;
+    overflow: auto;
+  }
+  
+  table tr {
+    display: flex;
+  }
+  
+  table td, table th {
+    text-align: left;
+    padding: 1rem;
+    flex: 1;
+  }
