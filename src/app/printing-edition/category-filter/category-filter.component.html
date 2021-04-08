@@ -1,0 +1,9 @@
+<div class="categories-box">
+    <h4 class="box-header">Categories:</h4>
+    <div class="input-check" *ngFor="let type of typesCheckBoxes">
+        <div class="custom-control custom-switch" *ngIf="type.index > 0">
+            <input class="custom-control-input" type="checkbox" id="{{type.name}}" (change)="OnChangeCheckBox()" [(ngModel)]="type.value">
+            <label class="custom-control-label" for="{{type.name}}">{{type.name}}</label>
+        </div>
+    </div>
+</div>

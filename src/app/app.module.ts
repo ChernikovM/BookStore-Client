@@ -10,6 +10,7 @@ import { AppComponent } from './app.component';
 import { SharedModule } from './shared/shared.module';
 import { UserModule } from './user/user.module';
 import { AuthInterceptor } from './shared/interceptors/auth.interceptor';
+import { PrintingEditionModule } from './printing-edition/printing-edition.module';
 
 @NgModule({
   declarations: [
@@ -23,6 +24,7 @@ import { AuthInterceptor } from './shared/interceptors/auth.interceptor';
     NgBootstrapFormValidationModule.forRoot(),
     SharedModule,
     UserModule,
+    PrintingEditionModule,
     NgxsReduxDevtoolsPluginModule.forRoot()
   ],
   providers: [

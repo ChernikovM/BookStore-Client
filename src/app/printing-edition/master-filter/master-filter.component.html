@@ -1,0 +1,23 @@
+<div class="container">
+    <div class="master-filter">
+        <div class="input-group mb-3">
+            <div class="input-group-prepend">
+                <button class="btn btn-outline-secondary dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">{{currentProp}}</button>
+                <div class="dropdown-menu">
+                    <p *ngFor="let item of getItemsArrayFromEnum(searchableProps)">
+                        <button type="button" class="btn btn-light" (click)="updateCurrentProp(item)">{{item}}</button>
+                    </p>
+                </div>
+            </div>
+            <div class="input-group-prepend">
+                <button class="btn btn-outline-secondary dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">{{currentAction}}</button>
+                <div class="dropdown-menu">
+                    <p *ngFor="let item of getItemsArrayFromEnum(searchableActions)">
+                        <button type="button" class="btn btn-light" (click)="updateCurrentAction(item)">{{item}}</button>
+                    </p>
+                </div>
+            </div>
+            <input type="text" class="form-control" placeholder="Search" (change)="onChangeFilter()" [(ngModel)]="currentValue"/>
+        </div>
+    </div>
+</div>

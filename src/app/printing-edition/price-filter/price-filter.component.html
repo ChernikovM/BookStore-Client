@@ -1,0 +1,21 @@
+<div class="price-box">
+    <h4 class="box-header">Price:</h4>
+
+    <form action="" class="rozetka-price-form" [formGroup]="priceFilterForm">
+        <section class="price-section">
+          <div class="price-filter">
+            <div class="price-filters">
+                <div class="input-group">
+                    <input type="text" formControlName="minPrice" class="form-control" placeholder="Min"/>
+                    <div class="input-group-prepend">
+                        <span class="input-group-text" id="basic-addon1">-</span>
+                    </div>
+                    <input type="text" formControlName="maxPrice" class="form-control" placeholder="Max"/>
+                    <button type="button" class="btn btn-primary" (click)="onSubmit()" [disabled]="!validateForm()">Ok</button>
+                </div>
+            </div>
+          </div>
+        </section>
+      </form>
+
+</div>

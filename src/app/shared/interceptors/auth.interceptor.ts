@@ -33,7 +33,7 @@ export class AuthInterceptor implements HttpInterceptor {
     if(tokens){
       request = this.addTokenToHeader(request, tokens.accessToken);
     }
-
+debugger;
     let result = next.handle(request).pipe(
         catchError((error) => {
           if(error instanceof HttpErrorResponse && error.status === 401){
@@ -47,12 +47,12 @@ export class AuthInterceptor implements HttpInterceptor {
     );
 
     
-    this.isRefreshing = false;
+    //this.isRefreshing = false;
     return result;
   }
 
   handle401Error(request: HttpRequest<any>, next: HttpHandler, tokens: IJwtPairModel | null){
-
+    debugger;
     if(this.isRefreshing === false){
       this.isRefreshing = true;
       this.refreshTokenSubject.next(null);
@@ -65,6 +65,7 @@ export class AuthInterceptor implements HttpInterceptor {
           return next.handle(this.addTokenToHeader(request, newTokenPair.accessToken));
         }),
         catchError(error => {
+          debugger;
           if(error instanceof HttpErrorResponse && (error.status === 400 || error.status === 401)){
             this._router.navigate(['account/signin'], {queryParams: {returnUrl: this._router.url}});
           }
@@ -79,7 +80,7 @@ export class AuthInterceptor implements HttpInterceptor {
         take(1),
         switchMap((jwt) => {
 
-          return next.handle(this.addTokenToHeader(request, jwt));
+          return next.handle(this.addTokenToHeader(request, jwt)); //TODO: handle 401 error here. When refresh token is invalid.
         })
       );
     }

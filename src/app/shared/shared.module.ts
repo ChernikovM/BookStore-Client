@@ -13,6 +13,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { PaginationComponent } from './components/pagination/pagination.component';
 import { NgbModule, NgbToastModule } from '@ng-bootstrap/ng-bootstrap';
 import { PagesizeDropdownComponent } from './components/pagesize-dropdown/pagesize-dropdown.component';
+import { EnumToArrayPipe } from './providers/pipes/enum-to-array.pipe';
 
 @NgModule({
   declarations: [
@@ -21,7 +22,8 @@ import { PagesizeDropdownComponent } from './components/pagesize-dropdown/pagesi
     JumbotronComponent,
     FilterablePopoverComponent,
     PaginationComponent,
-    PagesizeDropdownComponent
+    PagesizeDropdownComponent,
+    EnumToArrayPipe
   ],
   imports: [
     FormsModule,
@@ -37,7 +39,8 @@ import { PagesizeDropdownComponent } from './components/pagesize-dropdown/pagesi
     NavBarComponent,   
     FilterablePopoverComponent,
     PaginationComponent,
-    PagesizeDropdownComponent
+    PagesizeDropdownComponent,
+    EnumToArrayPipe
   ]
 })
 export class SharedModule { }

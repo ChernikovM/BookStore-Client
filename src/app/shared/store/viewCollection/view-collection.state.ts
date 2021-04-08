@@ -156,7 +156,7 @@ export class ViewCollectionState {
     context.setState({
       ...state,
       filters: payload,
-      filterString: this.getFilterStringFromArray(state.filters),
+      filterString: this.getFilterStringFromArray(payload),
 
     });
   }
@@ -181,7 +181,7 @@ export class ViewCollectionState {
     });
   }
 
-  private getFilterStringFromArray(array: string[]): string{
+  private getFilterStringFromArray(array: string[]): string{    
     var result: string = '';
 
     array.forEach(element => {

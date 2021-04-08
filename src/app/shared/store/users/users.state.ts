@@ -1,3 +1,4 @@
+import { HttpErrorResponse } from '@angular/common/http';
 import { Injectable, NgZone } from '@angular/core';
 import { Router } from '@angular/router';
 import { State, Action, StateContext, Selector } from '@ngxs/store';
@@ -103,7 +104,12 @@ export class UsersState {
         }
       }),
       catchError( error => {
-        this._errorHandler.handleErrors(error.error.errors);;     
+        if(error instanceof HttpErrorResponse){
+          if(error.status === 401){
+            this._localStorageService.removeTokenPair();
+          }
+        }
+        this._errorHandler.handleErrors(error.error.errors);
         return of(error);
       }),
     );
