@@ -10,12 +10,10 @@ import { AppComponent } from './app.component';
 import { SharedModule } from './shared/shared.module';
 import { UserModule } from './user/user.module';
 import { AuthInterceptor } from './shared/interceptors/auth.interceptor';
-import { PrintingEditionComponent } from './printing-edition/printing-edition.component';
 
 @NgModule({
   declarations: [
     AppComponent,
-    PrintingEditionComponent,
   ],
   imports: [
     BrowserModule,
