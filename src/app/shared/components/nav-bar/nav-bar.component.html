@@ -11,5 +11,8 @@
         <a *ngIf="isLogged() === true" class="nav-link"  (click)="onLogoutClicked()">Sign Out</a>
         <a *ngIf="isLogged() === false" class="nav-link" href="account/registration">Sign In</a>
       </li>
+      <li >
+        <app-cart-label></app-cart-label>
+      </li>
     </ul>
   </nav>

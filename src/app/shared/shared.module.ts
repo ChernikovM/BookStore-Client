@@ -14,6 +14,8 @@ import { PaginationComponent } from './components/pagination/pagination.componen
 import { NgbModule, NgbToastModule } from '@ng-bootstrap/ng-bootstrap';
 import { PagesizeDropdownComponent } from './components/pagesize-dropdown/pagesize-dropdown.component';
 import { EnumToArrayPipe } from './providers/pipes/enum-to-array.pipe';
+import { CartComponent } from './components/cart/cart.component';
+import { CartLabelComponent } from './components/cart-label/cart-label.component';
 
 @NgModule({
   declarations: [
@@ -23,7 +25,9 @@ import { EnumToArrayPipe } from './providers/pipes/enum-to-array.pipe';
     FilterablePopoverComponent,
     PaginationComponent,
     PagesizeDropdownComponent,
-    EnumToArrayPipe
+    EnumToArrayPipe,
+    CartComponent,
+    CartLabelComponent
   ],
   imports: [
     FormsModule,

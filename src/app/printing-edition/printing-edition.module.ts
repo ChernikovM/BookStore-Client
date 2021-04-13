@@ -14,6 +14,7 @@ import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { CategoryFilterComponent } from './category-filter/category-filter.component';
 import { MasterFilterComponent } from './master-filter/master-filter.component';
 import { SorterComponent } from './sorter/sorter.component';
+import { PrintingEditionDetailsComponent } from './printing-edition-details/printing-edition-details.component';
 
 
 @NgModule({
@@ -23,7 +24,8 @@ import { SorterComponent } from './sorter/sorter.component';
     PriceFilterComponent,
     CategoryFilterComponent,
     MasterFilterComponent,
-    SorterComponent
+    SorterComponent,
+    PrintingEditionDetailsComponent
   ],
   imports: [
     CommonModule,

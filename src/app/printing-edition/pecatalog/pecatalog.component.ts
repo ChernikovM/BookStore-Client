@@ -1,7 +1,9 @@
 import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
 import { Select, Store } from '@ngxs/store';
 import { Observable } from 'rxjs';
 import { PrintingEdition } from 'src/app/shared/models/PrintingEdition/PrintinEdition';
+import { CartService } from 'src/app/shared/services/cart/cart.service';
 import { PrintingEditionService } from 'src/app/shared/services/printing-edition/printing-edition.service';
 import { ViewCollectionActions } from 'src/app/shared/store/viewCollection/view-collection.actions';
 import { ViewCollectionState, ViewCollectionStateModel } from 'src/app/shared/store/viewCollection/view-collection.state';
@@ -13,7 +15,12 @@ import { ViewCollectionState, ViewCollectionStateModel } from 'src/app/shared/st
 })
 export class PECatalogComponent implements OnInit {
 
-  constructor(private _peService: PrintingEditionService, private _store: Store) { }
+  constructor(
+    private _peService: PrintingEditionService, 
+    private _store: Store, 
+    private _cartService: CartService,
+    private _router: Router
+    ) { }
 
   @Select(ViewCollectionState.getData) dataCollection$!: Observable<PrintingEdition[]>;
 
@@ -40,5 +47,13 @@ export class PECatalogComponent implements OnInit {
 
   updateView(){
     this._store.dispatch(new ViewCollectionActions.GetData(this._peService));
+  }
+
+  addToCart(pe: PrintingEdition){
+    this._cartService.add(pe);
+  }
+
+  showDetails(id: number){
+    this._router.navigate(['details', id]);
   }
 }

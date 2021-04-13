@@ -10,10 +10,11 @@
 			<app-sorter (update)="updateView()"></app-sorter>
 			<div class="row">
 		
-				<!-- BEGIN PRODUCTS -->
+				<!-- BEGIN PRODUCTS -->	
 				<div class="col-md-3 col-sm-6" *ngFor="let pe of dataCollection$ | async">
-					<span class="thumbnail">
-						  <img src="http://placehold.it/250x200" alt="...">
+					<span class="thumbnail" href="/">
+						<a href="/"></a>
+						  <img src="http://placehold.it/250x200" alt="..." (click)="showDetails(pe.id)">
 						  <h4>{{pe.title}}</h4>
 						  <div class="authors-list">
 							<p>{{getAuthorsList(pe)}}</p>
@@ -24,11 +25,11 @@
 								  <p class="price"><span class="price">$</span>{{pe.price}}</p>
 							  </div>
 							  <div class="col-md-6 col-sm-6">
-								  <button class="btn btn-success right" > BUY </button>
+								  <button class="btn btn-success right" (click)="addToCart(pe)"> BUY </button>
 							  </div>
 						  </div>
 					</span>
-				  </div>        
+				  </div> 
 				<!-- END PRODUCTS -->
 		
 			</div>

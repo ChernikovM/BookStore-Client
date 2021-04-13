@@ -1,0 +1,57 @@
+<div class="container" *ngIf="dataSet.length > 0">
+    <table class="table table-striped">
+        <thead>
+            <tr >
+                <th scope="col" >
+                    <span>
+                        Product
+                    </span>
+                </th>
+                <th scope="col">
+                    <span>
+                        Unit price
+                    </span>
+                </th>
+                <th scope="col" >
+                    <span>
+                        Qty
+                    </span>
+                </th>
+                <th scope="col" >
+                    <span>
+                        Order amount
+                    </span>
+                </th>
+                <th scope="col" >
+                    <span>
+                        
+                    </span>
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr  *ngFor="let item of dataSet">
+                <td>{{item.pe.title}}</td>
+                <td>{{item.pe.price}}</td>
+                <td>
+                    <span *ngIf="item.count > 1"><i class="fas fa-minus active" (click)="decrement(item.pe.id)"></i></span>
+                    {{item.count}}
+                    <span><i class="fas fa-plus active" (click)="increment(item.pe.id)"></i></span>
+                </td>
+                <td>{{item.pe.price*item.count | number}}</td>
+                <td>
+                    <i class="fas fa-trash-alt active" (click)="removeItemFromCart(item.pe.id)"></i>
+                </td> 
+            </tr>
+            
+        </tbody>
+    
+    </table> 
+    <div *ngIf="dataSet.length > 0" class="totalPrice">
+        <h2>TotalPrice: {{getTotalPrice() | number}}</h2>
+    </div>
+</div>
+<div class="holder" *ngIf="dataSet.length < 1">
+    <h1>No items in cart.</h1>
+</div>
+

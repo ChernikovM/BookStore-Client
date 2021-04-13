@@ -90,7 +90,6 @@ export class ViewCollectionState {
   @Action(ViewCollectionActions.GetData)
   getData(context: StateContext<ViewCollectionStateModel>, {payload}: ViewCollectionActions.GetData){
     const state = context.getState();
-    
     return payload.getCollection({
       pageRequestModel: { pageSize: state.pageSize, page: state.currentPage },
       filter: state.filterString,
