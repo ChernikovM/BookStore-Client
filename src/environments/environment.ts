@@ -7,6 +7,9 @@ export const environment = {
   apiUrl: 'https://localhost:44366', // or 49342 port
   defaultPageSize: 10,
   availablePageSizes: [5, 10, 20, 50, 100],
+  stripeApiPrivateKey: 'pk_test_51Ifj5GBJEyP0eqN2uusoQNPr54Na9JDwAaBuzuLUK37EPTDRduWiRtnElDhhDHf4IPOh1Qg7ZNPuy48xG6H0yjNB002dck5rbo',
+  paymentSuccessUrl: 'http://localhost:4200/paymentSuccess',
+  paymentCancelUrl: 'http://localhost:4200/paymentCancel',
 };
 
 /*

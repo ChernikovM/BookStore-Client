@@ -50,6 +50,12 @@
     <div *ngIf="dataSet.length > 0" class="totalPrice">
         <h2>TotalPrice: {{getTotalPrice() | number}}</h2>
     </div>
+    <div>
+        <button type="button" class="btn btn-outline-primary" (click)="pay()" [disabled]="loading === true">
+            <span *ngIf="loading===true" class="spinner-grow spinner-grow-sm" role="status" aria-hidden="true"></span>
+            Pay
+        </button>
+    </div>
 </div>
 <div class="holder" *ngIf="dataSet.length < 1">
     <h1>No items in cart.</h1>

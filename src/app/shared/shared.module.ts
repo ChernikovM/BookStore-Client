@@ -16,6 +16,8 @@ import { PagesizeDropdownComponent } from './components/pagesize-dropdown/pagesi
 import { EnumToArrayPipe } from './providers/pipes/enum-to-array.pipe';
 import { CartComponent } from './components/cart/cart.component';
 import { CartLabelComponent } from './components/cart-label/cart-label.component';
+import { SuccessPageComponent } from './components/cart/successPage/success-page.component';
+import { CancelPageComponent } from './components/cart/cancelPage/cancel-page.component';
 
 @NgModule({
   declarations: [
@@ -27,7 +29,9 @@ import { CartLabelComponent } from './components/cart-label/cart-label.component
     PagesizeDropdownComponent,
     EnumToArrayPipe,
     CartComponent,
-    CartLabelComponent
+    CartLabelComponent,
+    SuccessPageComponent,
+    CancelPageComponent
   ],
   imports: [
     FormsModule,

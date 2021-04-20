@@ -1,10 +1,11 @@
-import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
-import { Select, Store, UpdateState } from '@ngxs/store';
+import { Component, OnInit } from '@angular/core';
+import { Select, Store } from '@ngxs/store';
 import { Observable, of } from 'rxjs';
-import { findIndex } from 'rxjs/operators';
 import { PrintingEdition } from '../../models/PrintingEdition/PrintinEdition';
 import { CartService } from '../../services/cart/cart.service';
+import { PaymnetService } from '../../services/payment/paymnet.service';
 import { PrintingEditionService } from '../../services/printing-edition/printing-edition.service';
+import { PaymentActions } from '../../store/payment/payment.actions';
 import { ViewCollectionActions } from '../../store/viewCollection/view-collection.actions';
 import { ViewCollectionState } from '../../store/viewCollection/view-collection.state';
 
@@ -17,17 +18,26 @@ import { ViewCollectionState } from '../../store/viewCollection/view-collection.
 export class CartComponent implements OnInit {
 
   @Select(ViewCollectionState.getData) list$!: Observable<PrintingEdition[]>;
+
   cartList: {id: number, count: number}[] = [];
   dataSet: {pe: PrintingEdition, count: number}[] = [];
-  totalPrice: number = 0;  
+  totalPrice: number = 0;
 
-  constructor(private _cartService: CartService, private _store: Store, private _peService: PrintingEditionService) { }
+  loading: boolean = false;
+
+  constructor(
+    private _cartService: CartService, 
+    private _store: Store, 
+    private _peService: PrintingEditionService,
+    private _paymentService: PaymnetService
+    ) { }
 
   ngOnInit(): void {
     this.cartList = this._cartService.getItems();
     this.buildFilterString();
     this.getData();
     this.list$.subscribe(data => {
+      this.dataSet = [];
       for(let i = 0; i < data.length; ++i){
         let item: {pe: PrintingEdition, count: number} = {pe: data[i], count: 0};
         item.count = this.cartList[this.cartList.findIndex(x => x.id === data[i].id)].count;
@@ -88,5 +98,10 @@ export class CartComponent implements OnInit {
       this.totalPrice += element.count*element.pe.price;
     });
     return this.totalPrice;
+  }
+
+  pay(){
+    this.loading = true;
+    this._store.dispatch(new PaymentActions.CreateSession(this._paymentService.createSessionRequestModel(this.dataSet)));
   }
 }

@@ -36,6 +36,11 @@ export class CartService {
     this.syncItems();
   }
 
+  clear(){
+    this._items = [];
+    this.syncItems();
+  }
+
   increment(id: number){
     const index: number = this._items.findIndex(x => x.id === id);
 

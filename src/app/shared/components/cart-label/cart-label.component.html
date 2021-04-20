@@ -1,3 +1,6 @@
 <div>
-    <a class="nav-link" href="cart">Cart<span *ngIf="cartItemsCounter>0">({{cartItemsCounter}})</span></a>
+    <a class="nav-link" href="cart">
+        <i class="fa fa-shopping-cart" aria-hidden="true"></i>
+        <span *ngIf="cartItemsCounter>0" class= "badge">{{cartItemsCounter}}</span>
+    </a>
 </div>
