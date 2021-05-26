@@ -11,7 +11,7 @@ import { NgxsModule } from '@ngxs/store';
 import { FilterablePopoverComponent } from './components/filterable-popover/filterable-popover.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { PaginationComponent } from './components/pagination/pagination.component';
-import { NgbModule, NgbToastModule } from '@ng-bootstrap/ng-bootstrap';
+import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { PagesizeDropdownComponent } from './components/pagesize-dropdown/pagesize-dropdown.component';
 import { EnumToArrayPipe } from './providers/pipes/enum-to-array.pipe';
 import { CartComponent } from './components/cart/cart.component';
@@ -40,7 +40,6 @@ import { CancelPageComponent } from './components/cart/cancelPage/cancel-page.co
     RouterModule.forChild(routes),
     NgxsModule.forRoot(states),
     NgbModule,
-    NgbToastModule
   ],
   exports: [
     HeaderComponent,

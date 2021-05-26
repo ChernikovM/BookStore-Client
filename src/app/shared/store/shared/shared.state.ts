@@ -5,10 +5,12 @@ import { SharedActions } from './shared.actions';
 
 export class SharedStateModel {
   public currency!: CurrencyType;
+  public errors!: string[];
 }
 
 const defaults = {
-  currency: CurrencyType.USD
+  currency: CurrencyType.USD,
+  errors : [],
 };
 
 @State<SharedStateModel>({

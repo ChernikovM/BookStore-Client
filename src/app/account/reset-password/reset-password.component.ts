@@ -1,10 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { Select, Store } from '@ngxs/store';
-import { Observable } from 'rxjs';
+import { ActivatedRoute } from '@angular/router';
+import { Store } from '@ngxs/store';
 import { IPasswordChangeModel } from 'src/app/shared/models/Account/ResetPassword/IPasswordChangeModel';
 import { UsersActions } from 'src/app/shared/store/users/users.actions';
-import { UsersState } from 'src/app/shared/store/users/users.state';
 
 @Component({
   selector: 'app-reset-password',
@@ -13,32 +12,36 @@ import { UsersState } from 'src/app/shared/store/users/users.state';
 })
 export class ResetPasswordComponent implements OnInit {
 
-  @Select(UsersState.getEmailForResettingPassword) email$!: Observable<string>;
-
   resetPasswordForm: FormGroup;
   passwordChangeModel!: IPasswordChangeModel
-  email!: string;
+
+  userId: string;
+  token: string;
 
   constructor(
+    private _route: ActivatedRoute,
     private _store: Store,
     private _formBuilder: FormBuilder
   ) {
-    this.resetPasswordForm = this._formBuilder.group({
-      newPassword: ["", [Validators.required, Validators.minLength(6)]],
-      confirmNewPassword:["", [Validators.required]],
+    this.userId = this._route.snapshot.queryParamMap.get("userId")!;
+    this.token = this._route.snapshot.queryParamMap.get("token")!;
 
+    this.resetPasswordForm = this._formBuilder.group({
+      newPassword: ["", [Validators.required]],
+      confirmNewPassword:["", [Validators.required]],
     });
-    this.email$.subscribe(data => this.email = data);
-   }
+  }
 
   ngOnInit(): void {
+    this._store.dispatch(new UsersActions.CheckPasswordResetToken({id: this.userId, token: this.token}));
   }
 
   onSubmit(){
-    this.passwordChangeModel = this.resetPasswordForm.value;
-    this.passwordChangeModel.email = this.email;
+    this._store.dispatch(new UsersActions.ChangePassword({...this.resetPasswordForm.value, id: this.userId, token: this.token}));
+  }
 
-    this._store.dispatch(new UsersActions.ResetPassword(this.passwordChangeModel));
+  CheckForm(): boolean{
+    return this.resetPasswordForm.valid;
   }
 
 }

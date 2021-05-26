@@ -1,8 +1,8 @@
-<div class="container">
+<div class="container" *ngIf="product">
     <div class="basic-info">
         <img src="http://placehold.it/250x200" alt="...">
-        <h1>{{(data$ | async)!.title}}</h1>
-        <h4>by {{getAuthorsList((data$ | async)!)}}</h4>
+        <h1>{{product.title}}</h1>
+        <h4>by {{getAuthorsList(product)}}</h4>
 
         <div class="buy-info">
             <div class="counter">
@@ -19,7 +19,7 @@
                 <p>Price: 
                     <span>
                         <span>$</span>
-                        {{((data$ | async)!.price * counter) | number}}
+                        {{(product.price * counter) | number}}
                     </span>
                 </p>
             </div>
@@ -31,7 +31,7 @@
     <div class="description">
         <hr>
         <p>
-            {{(data$ | async)!.description}}
+            {{product.description}}
         </p>
     </div>
 </div>

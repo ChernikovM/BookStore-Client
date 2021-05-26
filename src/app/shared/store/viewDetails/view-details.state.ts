@@ -1,8 +1,6 @@
 import { Injectable } from '@angular/core';
 import { State, Action, StateContext, Selector } from '@ngxs/store';
-import { of } from 'rxjs';
-import { catchError, tap } from 'rxjs/operators';
-import { ErrorHandlerService } from '../../services/error-handler/error-handler.service';
+import { tap } from 'rxjs/operators';
 import { ViewDetailsActions } from './view-details.actions';
 
 export class ViewDetailsStateModel {
@@ -19,7 +17,7 @@ const defaults = {
 })
 @Injectable()
 export class ViewDetailsState {
-  constructor(private _errorHandler: ErrorHandlerService){}
+  constructor(){}
 
   @Selector()
   static getData(state: ViewDetailsStateModel){
@@ -35,10 +33,6 @@ export class ViewDetailsState {
           ...state,
           item: result
         })
-      }),
-      catchError((error) => {
-        this._errorHandler.handleErrors(error.error.errors);
-        return of(error);
       })
     );
   }

@@ -6,13 +6,12 @@ import {
   HttpInterceptor,
   HttpErrorResponse
 } from '@angular/common/http';
-import { BehaviorSubject, Observable, of, throwError } from 'rxjs';
+import { Observable, of} from 'rxjs';
 import { AccountService } from '../services/account/account.service';
 import { LocalStorageService } from '../services/localStorage/local-storage.service';
-import { catchError, filter, switchMap, take, tap } from 'rxjs/operators';
+import { catchError, switchMap } from 'rxjs/operators';
 import { IJwtPairModel } from '../models/JwtPair/IJwtPairModel';
-import { Router } from '@angular/router';
-import { ErrorHandlerService } from '../services/error-handler/error-handler.service';
+import { RouterService } from '../services/router/router.service';
 
 @Injectable()
 export class AuthInterceptor implements HttpInterceptor {
@@ -22,8 +21,7 @@ export class AuthInterceptor implements HttpInterceptor {
   constructor(
     private _accountService: AccountService,
     private _localStorageService: LocalStorageService,
-    private _router: Router,
-    private _errorHandler: ErrorHandlerService
+    private _router: RouterService,
     ) {}
 
   intercept(request: HttpRequest<unknown>, next: HttpHandler): Observable<HttpEvent<unknown>> {
@@ -39,7 +37,9 @@ export class AuthInterceptor implements HttpInterceptor {
             return this.handle401Error(request, next, tokens);
           }
           else{
-            this._errorHandler.handleErrors(error.error.errors);
+            //this._globalErrorHandler.handleError(error);
+            // this._errorHandler.handleHttpResponseError(error);
+            // this._errorHandler.handleErrors(error.error.errors);
             throw error;
           }
         })
@@ -55,9 +55,8 @@ export class AuthInterceptor implements HttpInterceptor {
         return next.handle(this.addTokenToHeader(request, newPair.accessToken));
       }),
       catchError(error  => {
-        debugger;
         if(error instanceof HttpErrorResponse && (error.status === 400 || error.status === 401)){
-          this._router.navigate(['account/signin'], {queryParams: {returnUrl: this._router.url}});
+          return this._router.navigateInZone(['account/signin'], {queryParams: {returnUrl: this._router.url}});
         }
         
         return of(error);
@@ -80,15 +79,18 @@ export class AuthInterceptor implements HttpInterceptor {
         catchError(error => {
           
           if(error instanceof HttpErrorResponse && (error.status === 400 || error.status === 401)){
-            this._router.navigate(['account/signin'], {queryParams: {returnUrl: this._router.url}});
+            return this._router.navigateInZone(['account/signin'], {queryParams: {returnUrl: this._router.url}});
           }
+          
           return of(error.error);
         })
       )
-    } //if refresh request returned 401
+      
+    } 
+    //if refresh request returned 401
     else {
       this.isRefreshing = false;
-      return this._router.navigate(['account/signin'], {queryParams: {returnUrl: this._router.url}});
+      return this._router.navigateInZone(['account/signin'], {queryParams: {returnUrl: this._router.url}});
     }
   }
 

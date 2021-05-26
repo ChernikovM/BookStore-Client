@@ -32,4 +32,8 @@ export class NavBarComponent implements OnInit {
     this._store.dispatch(new UsersActions.Logout(returnUrl!));
   }
 
+  onAccountClicked(){
+    
+  }
+
 }

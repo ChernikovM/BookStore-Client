@@ -1,16 +1,16 @@
 import { HttpErrorResponse } from '@angular/common/http';
-import { Injectable, NgZone } from '@angular/core';
-import { Router } from '@angular/router';
+import { Injectable } from '@angular/core';
 import { State, Action, StateContext, Selector } from '@ngxs/store';
+import { ToastrService } from 'ngx-toastr';
 import { of } from 'rxjs';
-import { catchError, concatMap, map, mergeMap, tap } from 'rxjs/operators';
+import { catchError, tap } from 'rxjs/operators';
 import { IUserModel } from 'src/app/shared/models/User/IUserModel';
-import { IResetPasswordTokenModel } from '../../models/Account/ResetPassword/IResetPasswordTokenModel';
 import { IJwtPairModel } from '../../models/JwtPair/IJwtPairModel';
 import { IMessageResponse } from '../../models/Message/IMessageResponse';
 import { AccountService } from '../../services/account/account.service';
-import { ErrorHandlerService } from '../../services/error-handler/error-handler.service';
 import { LocalStorageService } from '../../services/localStorage/local-storage.service';
+import { RouterService } from '../../services/router/router.service';
+import { UserService } from '../../services/user/user.service';
 import { UsersActions } from './users.actions';
 
 export class UsersStateModel {
@@ -18,7 +18,7 @@ export class UsersStateModel {
   public errors!: string[];
   public restPasswordToken!: string;
   public id!: string;
-  public emailForResetPassword!: string;
+  public isPasswordResetTokenValid!: boolean;
 }
 
 @State<UsersStateModel>({
@@ -28,7 +28,7 @@ export class UsersStateModel {
     errors: [],
     restPasswordToken: '',
     id: '',
-    emailForResetPassword: ''
+    isPasswordResetTokenValid: false,
 
   }
 })
@@ -41,15 +41,16 @@ export class UsersState {
   }
 
   @Selector()
-  static getEmailForResettingPassword(state: UsersStateModel){
-    return state.emailForResetPassword;
+  static isResetPasswordTokenValid(state: UsersStateModel){
+    return state.isPasswordResetTokenValid;
   }
 
   constructor(
     private _accountService: AccountService, 
     private _localStorageService: LocalStorageService,
-    private _router: Router,
-    private _errorHandler: ErrorHandlerService
+    private _userService: UserService,
+    private _toastrService: ToastrService,
+    private _router: RouterService
     ){ }
 
   @Action(UsersActions.Register)
@@ -62,12 +63,8 @@ export class UsersState {
           ...state,
           currentUser: result,
         });
-        //TODO: redirect to emailConfiramtionInfo page
-      }),
-      catchError((error) => {
-        this._errorHandler.handleErrors(error.error.errors);
-        return of(error);
-      }),
+        this._router.navigateInZone(['account/emailSent']);
+      })
     );
 
   }
@@ -79,16 +76,12 @@ export class UsersState {
         this._localStorageService.setTokenPair(result, payload.remember!);
 
         if(returnUrl){
-          this._router.navigate([returnUrl]);
+          this._router.navigateInZone([returnUrl]);
         }
         else {
-          //TODO: redirect to userDetailsPage or PE-listPage by role
+          this._router.navigateInZone(['/users/account']);
         }
-      }),
-      catchError(error => {
-        this._errorHandler.handleErrors(error.error.errors);
-        return of(error);
-      }),
+      })
     );
   }
 
@@ -98,9 +91,14 @@ export class UsersState {
     return this._accountService.logout().pipe(
       tap( (result: IMessageResponse) => {
         this._localStorageService.removeTokenPair();
+        var state = context.getState();
+        context.setState({
+          ...state,
+          currentUser: null,
+        });
+
         if(returnUrl){
-          this._router.onSameUrlNavigation = 'reload';
-          this._router.navigateByUrl(returnUrl);
+          this._router.navigateInZone([returnUrl]);
         }
       }),
       catchError( error => {
@@ -109,58 +107,92 @@ export class UsersState {
             this._localStorageService.removeTokenPair();
           }
         }
-        this._errorHandler.handleErrors(error.error.errors);
-        return of(error);
+        throw error;
+      })
+    );
+  }
+
+  @Action(UsersActions.SendResetPasswordMail)
+  sendResetPasswordMail(context: StateContext<UsersStateModel>, { payload }: UsersActions.SendResetPasswordMail){
+
+    return this._accountService.sendPasswordResetMail(payload).pipe(
+      tap((result : IMessageResponse) => {
+        this._router.navigateInZone(['account/emailSent']);
       }),
     );
   }
 
-  @Action(UsersActions.CheckEmail)
-  checkEmail(context: StateContext<UsersStateModel>, { payload }: UsersActions.CheckEmail){
+  @Action(UsersActions.GetMyProfile)
+  getMyProfile(context: StateContext<UsersStateModel>){
+
+    return this._userService.getmyProfile().pipe(
+      tap( (result) =>{
+        var state = context.getState();
+        context.setState({
+          ...state,
+          currentUser: result
+        });
+      })
+    );
+  }
+
+  @Action(UsersActions.UpdateProfile)
+  updateProfile(context: StateContext<UsersStateModel>, {payload}: UsersActions.UpdateProfile){
     
-    return this._accountService.checkEmail(payload).pipe(
-      tap( (result: boolean) => {
-        var state = context.getState();
-        context.setState({
-          ...state,
-          emailForResetPassword: payload.email,
-
-        });
-        this._router.navigate(['account/resetPassword']);
-        //TODO: redirect to reset password page
-      }),
-      catchError( error => {
-        this._errorHandler.handleErrors(error.error.errors);
-        return of(error);
+    return this._userService.updateProfile(payload).pipe(
+      tap( (result) =>{
+        this._toastrService.success(result.message);
+        context.dispatch(new UsersActions.GetMyProfile());
       })
     );
   }
 
+  @Action(UsersActions.CheckPasswordResetToken)
+  checkPasswordResetToken(context: StateContext<UsersStateModel>, {payload}: UsersActions.CheckPasswordResetToken){
+    
+    return this._accountService.checkToken(payload).pipe(
+      tap( (result) =>{
+        let state = context.getState();
 
-  @Action(UsersActions.ResetPassword)
-  resetPassword(context: StateContext<UsersStateModel>, {payload}: UsersActions.ResetPassword){
-
-    return this._accountService.resetPassword(payload).pipe(
-      tap( (result) => {
-        var state = context.getState();
         context.setState({
           ...state,
-          emailForResetPassword: '',
-
+          isPasswordResetTokenValid: result
         });
-        this._router.navigate(['account/signin']);
-        //TODO: tell the user thar email was sent
+
+        if(!result){
+          this._router.navigateInZone(['account/invalidResetPasswordLink']);
+        }
+        
+      })
+    );
+  }
+
+  @Action(UsersActions.ChangePassword)
+  changePassword(context: StateContext<UsersStateModel>, {payload}: UsersActions.ChangePassword){
+    
+    return this._accountService.changePassword(payload).pipe(
+      tap( (result) =>{
+        this._router.navigateInZone(['account/passwordChangedSuccessfull']);
+      })
+    );
+  }
+
+  @Action(UsersActions.EmailConfirm)
+  emailConfirm(context: StateContext<UsersStateModel>, {payload}: UsersActions.EmailConfirm){
+    
+    return this._accountService.emailConfirm(payload).pipe(
+      tap( (result) =>{
+        this._router.navigateInZone(['account/emailConfirmationSuccess']);
       }),
       catchError( error => {
-        debugger;
-        this._errorHandler.handleErrors(error.error.errors);
+        if(error instanceof HttpErrorResponse){
+          if(error.status === 400){
+            this._router.navigateInZone(['account/emailConfirmationFail']);
+          }
+        }
         return of(error);
       })
     );
-
-
   }
-
-
 
 }

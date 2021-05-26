@@ -2,13 +2,18 @@ import { ILoginModel } from "../../models/Account/Login/ILoginModel";
 import { IRegistrationModel } from "../../models/Account/Registration/IRegistrationModel";
 import { IEmailModel } from "../../models/Account/ResetPassword/IForgotPasswordModel";
 import { IPasswordChangeModel } from "../../models/Account/ResetPassword/IPasswordChangeModel";
+import { IUserUpdateModel } from "../../models/User/IUserUpdateModel";
 
 export enum EUsersAction {
   Register = '[Users] Register',
   Login = '[Users] Login',
   Logout = '[Users] Logout',
-  CheckEmail = '[Users] CheckEmail',
-  ResetPassword = '[Users] ResetPassword'
+  GetMyProfile = '[Users] GetMyprofile',
+  UpdateProfile = '[Users] UpdateProfile',
+  SendResetPasswordMail = '[Users] SendResetPasswordMail',
+  CheckPasswordResetToken = '[Users] CheckPasswordResetToken',
+  ChangePassword = '[Users] ChangePassword',
+  EmailConfirm = '[Users] EmailConfirm'
 }
 
 export namespace UsersActions{
@@ -28,14 +33,34 @@ export namespace UsersActions{
     constructor(public returnUrl: string) {}
   }
 
-  export class ResetPassword{
-    static readonly type = EUsersAction.ResetPassword;
-    constructor(public payload: IPasswordChangeModel) {}
+  export class GetMyProfile{
+    static readonly type = EUsersAction.GetMyProfile;
+    constructor() {}
   }
 
-  export class CheckEmail{
-    static readonly type = EUsersAction.CheckEmail;
-    constructor(public payload: IEmailModel) {}
+  export class UpdateProfile{
+    static readonly type = EUsersAction.UpdateProfile;
+    constructor(public payload : IUserUpdateModel ) {}
+  }
+
+  export class SendResetPasswordMail{
+    static readonly type = EUsersAction.SendResetPasswordMail;
+    constructor(public payload: {EmailAddress: string}) {}
+  }
+
+  export class CheckPasswordResetToken{
+    static readonly type = EUsersAction.CheckPasswordResetToken;
+    constructor(public payload: {id: string, token: string}) {}
+  }
+
+  export class ChangePassword{
+    static readonly type = EUsersAction.ChangePassword;
+    constructor(public payload: {id: string, token: string, newPassword: string, confirmNewPassword: string}) {}
+  }
+
+  export class EmailConfirm{
+    static readonly type = EUsersAction.EmailConfirm;
+    constructor(public payload: {id: string, token: string}){}
   }
 
 }

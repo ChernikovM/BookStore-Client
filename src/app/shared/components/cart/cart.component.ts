@@ -1,7 +1,9 @@
 import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
 import { Select, Store } from '@ngxs/store';
 import { Observable, of } from 'rxjs';
 import { PrintingEdition } from '../../models/PrintingEdition/PrintinEdition';
+import { AccountService } from '../../services/account/account.service';
 import { CartService } from '../../services/cart/cart.service';
 import { PaymnetService } from '../../services/payment/paymnet.service';
 import { PrintingEditionService } from '../../services/printing-edition/printing-edition.service';
@@ -29,7 +31,9 @@ export class CartComponent implements OnInit {
     private _cartService: CartService, 
     private _store: Store, 
     private _peService: PrintingEditionService,
-    private _paymentService: PaymnetService
+    private _paymentService: PaymnetService,
+    private _accountService: AccountService,
+    private _router: Router
     ) { }
 
   ngOnInit(): void {
@@ -47,27 +51,28 @@ export class CartComponent implements OnInit {
   }
 
   buildFilterString(){
-    let filter: string = '';
-    let first: boolean = true;
-    
-    this.cartList.forEach(element => {
-      if(!first){
-        filter+='||';
-      }
-      filter += `Id=\"${element.id}\"`;
-      if(first){
-        first = false;
-      }  
-    });
+    if(this.cartList.length > 0){
+      let filter: string = '';
+      let first: boolean = true;
+      
+      this.cartList.forEach(element => {
+        if(!first){
+          filter+='||';
+        }
+        filter += `Id=\"${element.id}\"`;
+        if(first){
+          first = false;
+        } 
+      });
 
-    this._store.dispatch(new ViewCollectionActions.UpdateFiltersArray([filter]));
+      this._store.dispatch(new ViewCollectionActions.UpdateFiltersArray([filter]));
+    }
   }
 
   getData(){
-    if(this.cartList.length){
-      this._store.dispatch(new ViewCollectionActions.SetPageSize(this.cartList.length));
+    if(this.cartList.length > 0){
+      this._store.dispatch(new ViewCollectionActions.GetData(this._peService));
     }
-    this._store.dispatch(new ViewCollectionActions.GetData(this._peService));
   }
 
   getCount(id: number): number{
@@ -103,5 +108,13 @@ export class CartComponent implements OnInit {
   pay(){
     this.loading = true;
     this._store.dispatch(new PaymentActions.CreateSession(this._paymentService.createSessionRequestModel(this.dataSet)));
+  }
+
+  isLogged() : boolean {
+    return this._accountService.isLoggedIn();
+  }
+
+  redirectToSignin(){
+    this._router.navigate(['account/signin'], { queryParams: { returnUrl: 'cart' } });
   }
 }

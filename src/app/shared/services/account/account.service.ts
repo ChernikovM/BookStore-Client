@@ -18,8 +18,11 @@ export class AccountService {
 
   apiUrl: string;
 
+  emailConfirmationUrl: string;
+
   constructor(private http: HttpClient, private _localStorageService: LocalStorageService) {
-    this.apiUrl = environment.apiUrl + '/accounts';
+    this.apiUrl = environment.apiUrl + '/account';
+    this.emailConfirmationUrl = environment.emailConfirmationUrl;
   }
 
   isLoggedIn(): boolean{
@@ -32,7 +35,7 @@ export class AccountService {
   }
 
   registration(model: IRegistrationModel): Observable<IUserModel>{
-    return this.http.post<IUserModel>(`${this.apiUrl}/register`, model);
+    return this.http.post<IUserModel>(`${this.apiUrl}/register`, {...model, callbackUrl: this.emailConfirmationUrl});
   }
 
   login(model: ILoginModel): Observable<IJwtPairModel>{
@@ -47,11 +50,20 @@ export class AccountService {
     return this.http.get<IMessageResponse>(`${this.apiUrl}/logout`);
   }
 
-  checkEmail(model: IEmailModel): Observable<boolean>{
-    return this.http.post<boolean>(`${this.apiUrl}/checkEmail`, model);
+  sendPasswordResetMail(payload: {EmailAddress: string}): Observable<IMessageResponse>{
+    let body = {...payload, CallbackUrl: environment.passwordResetUrl}
+    return this.http.post<IMessageResponse>(`${this.apiUrl}/SendPasswordResetMail`, body);
   }
 
-  resetPassword(model: IPasswordChangeModel): Observable<IMessageResponse>{
-    return this.http.post<IMessageResponse>(`${this.apiUrl}/resetPassword`, model);
+  checkToken(payload: {id: string, token: string}): Observable<boolean>{
+    return this.http.get<boolean>(`${this.apiUrl}/CheckPasswordResetToken/${payload.id}?token=${payload.token}`);
+  }
+
+  changePassword(payload: {id:string, token: string, newPassword:string, confirmNewPassword: string}): Observable<IMessageResponse>{
+    return this.http.patch<IMessageResponse>(`${this.apiUrl}/SetNewPassword/${payload.id}`, payload);
+  }
+
+  emailConfirm(payload: {id: string, token: string}): Observable<IMessageResponse>{
+    return this.http.get<IMessageResponse>(`${this.apiUrl}/ConfirmEmail?userId=${payload.id}&token=${payload.token}`);
   }
 }

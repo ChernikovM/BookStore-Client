@@ -51,9 +51,12 @@
         <h2>TotalPrice: {{getTotalPrice() | number}}</h2>
     </div>
     <div>
-        <button type="button" class="btn btn-outline-primary" (click)="pay()" [disabled]="loading === true">
+        <button *ngIf="isLogged() === true" type="button" class="btn btn-outline-primary" (click)="pay()" [disabled]="loading === true">
             <span *ngIf="loading===true" class="spinner-grow spinner-grow-sm" role="status" aria-hidden="true"></span>
             Pay
+        </button>
+        <button *ngIf="isLogged() === false" type="button" class="btn btn-outline-primary" (click)="redirectToSignin()">
+            Sign in
         </button>
     </div>
 </div>

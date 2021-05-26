@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { CanActivate, ActivatedRouteSnapshot, RouterStateSnapshot, UrlTree, Router } from '@angular/router';
 import { Observable } from 'rxjs';
 import { AccountService } from '../services/account/account.service';
+import { RouterService } from '../services/router/router.service';
 
 @Injectable({
   providedIn: 'root'
@@ -9,7 +10,7 @@ import { AccountService } from '../services/account/account.service';
 export class AuthGuard implements CanActivate {
 
   constructor(
-    private _router: Router,
+    private _router: RouterService,
     private _accountService: AccountService,
   ) { }
 
@@ -22,7 +23,7 @@ export class AuthGuard implements CanActivate {
       return true;
     }
 
-    this._router.navigate(['account/signin'], { queryParams: { returnUrl: state.url } });
+    this._router.navigateInZone(['account/signin'], { queryParams: { returnUrl: state.url } });
     return false;
     } 
 }

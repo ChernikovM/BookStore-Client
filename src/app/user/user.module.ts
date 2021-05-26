@@ -12,10 +12,9 @@ import { NgbDropdownModule, NgbPopoverModule, NgbTooltipModule, NgbTypeaheadModu
 import { FilterableDirective } from './filterable.directive';
 import { SharedModule } from '../shared/shared.module';
 import { UserDetailsComponent } from './user-details/user-details.component';
-import { UsersManagementComponent } from './users-management/users-management.component';
 
 @NgModule({
-  declarations: [UsersListComponent, SortableDirective, FilterableDirective, UserDetailsComponent, UsersManagementComponent],
+  declarations: [UsersListComponent, SortableDirective, FilterableDirective, UserDetailsComponent],
   imports: [
     FormsModule,
     ReactiveFormsModule,

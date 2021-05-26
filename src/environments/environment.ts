@@ -10,6 +10,8 @@ export const environment = {
   stripeApiPrivateKey: 'pk_test_51Ifj5GBJEyP0eqN2uusoQNPr54Na9JDwAaBuzuLUK37EPTDRduWiRtnElDhhDHf4IPOh1Qg7ZNPuy48xG6H0yjNB002dck5rbo',
   paymentSuccessUrl: 'http://localhost:4200/paymentSuccess',
   paymentCancelUrl: 'http://localhost:4200/paymentCancel',
+  passwordResetUrl: 'http://localhost:4200/account/resetPassword',
+  emailConfirmationUrl: 'http://localhost:4200/account/emailConfirmation'
 };
 
 /*

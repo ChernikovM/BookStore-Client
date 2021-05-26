@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Store } from '@ngxs/store';
-import { AccountService } from 'src/app/shared/services/account/account.service';
 import { UsersActions } from 'src/app/shared/store/users/users.actions';
 
 @Component({
@@ -12,11 +11,14 @@ import { UsersActions } from 'src/app/shared/store/users/users.actions';
 export class ForgotPasswordComponent implements OnInit {
 
   forgotPasswordForm: FormGroup;
+  loading: boolean;
 
   constructor(
-    private _formBuilder: FormBuilder,    
+    private _formBuilder: FormBuilder,
     private _store: Store
     ) {
+      this.loading = false;
+
       this.forgotPasswordForm = this._formBuilder.group({
         email: ["", [Validators.required, Validators.email]]
       })
@@ -27,7 +29,8 @@ export class ForgotPasswordComponent implements OnInit {
   }
 
   onSubmit(): void{
-    this._store.dispatch(new UsersActions.CheckEmail(this.forgotPasswordForm.value));
+    this.loading = true;
+    let payload = {EmailAddress: this.forgotPasswordForm.value.email};
+    this._store.dispatch(new UsersActions.SendResetPasswordMail(payload));
   }
-
 }

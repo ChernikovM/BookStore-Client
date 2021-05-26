@@ -1,5 +1,5 @@
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
-import { NgModule } from '@angular/core';
+import { ErrorHandler, NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { NgBootstrapFormValidationModule } from 'ng-bootstrap-form-validation';
@@ -11,6 +11,10 @@ import { SharedModule } from './shared/shared.module';
 import { UserModule } from './user/user.module';
 import { AuthInterceptor } from './shared/interceptors/auth.interceptor';
 import { PrintingEditionModule } from './printing-edition/printing-edition.module';
+import { GlobalErrorHandler } from './shared/services/error-handler/global-error-handler';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { ToastrModule } from 'ngx-toastr';
+
 
 @NgModule({
   declarations: [
@@ -18,6 +22,8 @@ import { PrintingEditionModule } from './printing-edition/printing-edition.modul
   ],
   imports: [
     BrowserModule,
+    BrowserAnimationsModule,
+    
     AppRoutingModule,
     HttpClientModule,
     NgbModule,
@@ -25,13 +31,20 @@ import { PrintingEditionModule } from './printing-edition/printing-edition.modul
     SharedModule,
     UserModule,
     PrintingEditionModule,
-    NgxsReduxDevtoolsPluginModule.forRoot()
+    NgxsReduxDevtoolsPluginModule.forRoot(),
+
+    ToastrModule.forRoot(),
+
   ],
   providers: [
     {
       provide: HTTP_INTERCEPTORS,
       useClass: AuthInterceptor,
       multi: true
+    },
+    {
+      provide: ErrorHandler,
+      useClass: GlobalErrorHandler
     }
   ],
   bootstrap: [AppComponent]
